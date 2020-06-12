@@ -1,0 +1,27 @@
+{
+    "name": "medschoolcoach/lumen-auth0",
+    "require": {
+        "auth0/auth0-php": "7.2"
+    },
+    "authors": [
+        {
+            "name": "cbrhex",
+            "email": "cbrhex@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "MedSchoolCoach\\LumenAuth0\\Auth0ServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "MedSchoolCoach\\LumenAuth0\\": "src/"
+        },
+        "files": [
+            "helpers/misc.php"
+        ]
+    }
+}
