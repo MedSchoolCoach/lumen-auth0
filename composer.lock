@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a07a5f371707e2677eefc4202b3a99f5",
+    "content-hash": "19f03809a3bfb0bbeeeba5ef125a7197",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -309,6 +309,41 @@
                 }
             ],
             "time": "2020-05-22T08:21:12+00:00"
+        },
+        {
+            "name": "medschoolcoach/http-client",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:MedSchoolCoach/http-client.git",
+                "reference": "d367b59d70eb8e0e45fb730e72b24c69d44b0857"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/MedSchoolCoach/http-client/zipball/d367b59d70eb8e0e45fb730e72b24c69d44b0857",
+                "reference": "d367b59d70eb8e0e45fb730e72b24c69d44b0857",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MedSchoolCoach\\HttpClient\\": "src/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "cbrhex",
+                    "email": "cbrhex@gmail.com"
+                }
+            ],
+            "support": {
+                "source": "https://github.com/MedSchoolCoach/http-client/tree/master",
+                "issues": "https://github.com/MedSchoolCoach/http-client/issues"
+            },
+            "time": "2020-06-12T21:33:01+00:00"
         },
         {
             "name": "psr/http-message",
@@ -670,7 +705,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "medschoolcoach/http-client": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

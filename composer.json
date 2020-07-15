@@ -1,7 +1,8 @@
 {
     "name": "medschoolcoach/lumen-auth0",
     "require": {
-        "auth0/auth0-php": "7.2"
+        "auth0/auth0-php": "7.2",
+        "medschoolcoach/http-client": "dev-master"
     },
     "authors": [
         {
@@ -23,5 +24,11 @@
         "files": [
             "helpers/misc.php"
         ]
-    }
+    },
+    "repositories":[
+        {
+            "type": "vcs",
+            "url": "git@github.com:MedSchoolCoach/http-client.git"
+        }
+    ]
 }
