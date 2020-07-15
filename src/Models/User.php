@@ -3,6 +3,7 @@
 namespace MedSchoolCoach\LumenAuth0\Models;
 
 use Illuminate\Auth\GenericUser;
+use MedSchoolCoach\LumenAuth0\Auth0Service;
 
 /**
  * Class User
@@ -34,5 +35,17 @@ class User extends GenericUser
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    /**
+     * @throws \Auth0\SDK\Exception\EmptyOrInvalidParameterException
+     * @throws \Throwable
+     */
+    public function initRoles()
+    {
+        /** @var Auth0Service $service */
+        $service = app(Auth0Service::class);
+
+        $this->roles = $service->getUserRoles($this->getId());
     }
 }
