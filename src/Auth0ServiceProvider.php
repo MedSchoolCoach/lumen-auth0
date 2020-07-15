@@ -37,7 +37,8 @@ class Auth0ServiceProvider extends ServiceProvider
         $this->app->singleton(Verifier::class, Auth0Verifier::class);
 
         $this->app->routeMiddleware([
-            'auth0' => \MedSchoolCoach\LumenAuth0\Http\Middleware\Auth0Middleware::class
+            'auth0' => \MedSchoolCoach\LumenAuth0\Http\Middleware\Auth0Middleware::class,
+            'auth0Admin' => \MedSchoolCoach\LumenAuth0\Http\Middleware\Auth0AdminMiddleware::class,
         ]);
     }
 
