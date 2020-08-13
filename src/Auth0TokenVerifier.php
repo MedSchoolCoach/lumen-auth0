@@ -21,7 +21,7 @@ class Auth0TokenVerifier extends \Auth0\SDK\Helpers\Tokens\TokenVerifier impleme
     /**
      * @var string
      */
-    private $audience;
+    protected $audience;
 
     /**
      * @var string
