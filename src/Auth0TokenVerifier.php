@@ -56,7 +56,7 @@ class Auth0TokenVerifier extends \Auth0\SDK\Helpers\Tokens\TokenVerifier impleme
         $sig = new AsymmetricVerifier(
             new JWKFetcher($this->cache, $this->getFetcherOptions()));
 
-        parent::__construct($this->domain, $this->audience, $this->clientId, $sig);
+        parent::__construct($this->domain, $this->audience, $sig);
     }
 
     /**
