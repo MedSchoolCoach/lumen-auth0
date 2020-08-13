@@ -21,6 +21,11 @@ class Auth0TokenVerifier extends \Auth0\SDK\Helpers\Tokens\TokenVerifier impleme
     /**
      * @var string
      */
+    private $audience;
+
+    /**
+     * @var string
+     */
     private $clientId;
 
     /**
@@ -40,17 +45,18 @@ class Auth0TokenVerifier extends \Auth0\SDK\Helpers\Tokens\TokenVerifier impleme
      * @param string $jwksUri
      * @param CacheRepository $cache
      */
-    public function __construct(string $domain, string $clientId, string $jwksUri, CacheRepository $cache)
+    public function __construct(string $domain, string $audience, string $clientId, string $jwksUri, CacheRepository $cache)
     {
         $this->domain = $domain;
         $this->clientId = $clientId;
+        $this->audience = $audience;
         $this->jwksUri = $jwksUri;
         $this->cache = $cache;
 
         $sig = new AsymmetricVerifier(
             new JWKFetcher($this->cache, $this->getFetcherOptions()));
 
-        parent::__construct($this->domain, $this->clientId, $sig);
+        parent::__construct($this->domain, $this->audience, $this->clientId, $sig);
     }
 
     /**

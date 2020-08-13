@@ -2,13 +2,13 @@
 
 namespace MedSchoolCoach\LumenAuth0;
 
-use MedSchoolCoach\LumenAuth0\Models\User;
-use MedSchoolCoach\LumenAuth0\Contracts\TokenVerifier;
-use MedSchoolCoach\LumenAuth0\Contracts\Verifier;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Http\Request;
-use Laravel\Lumen\Application;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Lumen\Application;
+use MedSchoolCoach\LumenAuth0\Contracts\TokenVerifier;
+use MedSchoolCoach\LumenAuth0\Contracts\Verifier;
+use MedSchoolCoach\LumenAuth0\Models\User;
 
 /**
  * Class Auth0ServiceProvider
@@ -29,6 +29,7 @@ class Auth0ServiceProvider extends ServiceProvider
         $this->app->singleton(TokenVerifier::class, function (Application $app) {
             return new Auth0TokenVerifier(
                 auth0_config('domain'),
+                auth0_config('audience'),
                 auth0_config_client('client_id'),
                 auth0_config('jwks_uri'),
                 $app->make(CacheRepository::class));
@@ -37,7 +38,7 @@ class Auth0ServiceProvider extends ServiceProvider
         $this->app->singleton(Verifier::class, Auth0Verifier::class);
 
         $this->app->routeMiddleware([
-            'auth0' => \MedSchoolCoach\LumenAuth0\Http\Middleware\Auth0Middleware::class,
+            'auth0'      => \MedSchoolCoach\LumenAuth0\Http\Middleware\Auth0Middleware::class,
             'auth0Admin' => \MedSchoolCoach\LumenAuth0\Http\Middleware\Auth0AdminMiddleware::class,
         ]);
     }
@@ -45,7 +46,8 @@ class Auth0ServiceProvider extends ServiceProvider
     /**
      * Bootstrap the application services.
      *
-     * @param Auth0Verifier $verifier
+     * @param  Auth0Verifier  $verifier
+     *
      * @return void
      */
     public function boot(Auth0Verifier $verifier)
