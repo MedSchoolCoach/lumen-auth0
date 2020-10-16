@@ -2,6 +2,8 @@
 
 namespace MedSchoolCoach\LumenAuth0;
 
+use MedSchoolCoach\LumenAuth0\Models\User;
+use Illuminate\Support\Collection;
 use MedSchoolCoach\HttpClient\Request;
 use Auth0\SDK\Exception\InvalidTokenException;
 use Illuminate\Support\Facades\Cache;
@@ -18,6 +20,8 @@ class Auth0Service
     const OAUTH_TOKEN_SEGMENT = 'oauth/token';
     const CACHE_AUTH0_OAUTH_TOKEN_KEY = 'auth0.api.oauth.token';
     const API_SEGMENT = 'api/v2/';
+    const USERS_BY_EMAIL_SEGMENT = 'users-by-email';
+    const USER_BY_ID_SEGMENT = 'users';
 
     /**
      * @var Request
@@ -87,5 +91,59 @@ class Auth0Service
         $users = new \Auth0\SDK\API\Management\Users($this->getApiClient());
 
         return new UserRoles($users->getRoles($userId));
+    }
+
+    /**
+     * @param string $email
+     * @return User|null
+     * @throws \Throwable
+     */
+    public function getUserByEmail(string $email): ?User
+    {
+        return $this->getUsersByEmail($email)->first();
+    }
+
+
+    /**
+     * @param string $email
+     * @return Collection
+     * @throws \Throwable
+     */
+    public function getUsersByEmail(string $email): Collection
+    {
+        $user = $this->httpRequest
+            ->withHeaders(['Authorization' => 'Bearer '.$this->getOauthToken()])
+            ->get(
+                conf_auth0('api_domain').self::API_SEGMENT.self::USERS_BY_EMAIL_SEGMENT.'?email='.$email,
+                compact('email')
+            );
+
+        return collect($user->json())->map(function ($item) {
+            return new User($item);
+        });
+    }
+
+
+    /**
+     * @param string $id
+     * @return User|null
+     * @throws \Throwable
+     */
+    public function getUserById(string $id): ?User
+    {
+        $user = $this->httpRequest
+            ->withHeaders(['Authorization' => 'Bearer '.$this->getOauthToken()])
+            ->get(conf_auth0('api_domain').self::API_SEGMENT.self::USER_BY_ID_SEGMENT.'/'.$id);
+        return new User($user->json());
+    }
+
+    /**
+     * @param string $email
+     * @return bool
+     * @throws \Throwable
+     */
+    public function isUserExistByEmail(string $email): bool
+    {
+        return ! is_null($this->getUserByEmail($email));
     }
 }
