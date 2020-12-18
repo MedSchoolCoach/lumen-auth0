@@ -1,7 +1,7 @@
 {
     "name": "medschoolcoach/lumen-auth0",
     "require": {
-        "auth0/auth0-php": "7.2",
+        "auth0/auth0-php": "7.5",
         "medschoolcoach/http-client": "dev-master"
     },
     "authors": [
