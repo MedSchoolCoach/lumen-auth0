@@ -2,12 +2,14 @@
 
 namespace MedSchoolCoach\LumenAuth0;
 
-use MedSchoolCoach\LumenAuth0\Models\User;
-use Illuminate\Support\Collection;
-use MedSchoolCoach\HttpClient\Request;
-use Auth0\SDK\Exception\InvalidTokenException;
-use Illuminate\Support\Facades\Cache;
 use Auth0\SDK\API\Helpers\ApiClient;
+use Auth0\SDK\Exception\InvalidTokenException;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use MedSchoolCoach\HttpClient\Request;
+use MedSchoolCoach\HttpClient\Response;
+use MedSchoolCoach\LumenAuth0\Models\User;
 use MedSchoolCoach\LumenAuth0\Models\UserRoles;
 
 /**
@@ -30,7 +32,8 @@ class Auth0Service
 
     /**
      * Auth0Service constructor.
-     * @param Request $httpRequest
+     *
+     * @param  Request  $httpRequest
      */
     public function __construct(Request $httpRequest)
     {
@@ -48,10 +51,10 @@ class Auth0Service
         }
 
         $response = $this->httpRequest->post(auth0_config('api_domain').self::OAUTH_TOKEN_SEGMENT, [
-            "client_id" => auth0_config_client('client_api_id'),
+            "client_id"     => auth0_config_client('client_api_id'),
             "client_secret" => auth0_config_client('client_api_secret'),
-            "audience" => auth0_config('api_audience'),
-            "grant_type" => self::GRANT_TYPE_CLIENT_CREDENTIALS
+            "audience"      => auth0_config('api_audience'),
+            "grant_type"    => self::GRANT_TYPE_CLIENT_CREDENTIALS
         ]);
 
         throw_if(! $response->has('access_token') || ! $response->has('expires_in'),
@@ -75,13 +78,14 @@ class Auth0Service
 
         return new ApiClient([
             'basePath' => '',
-            'domain' => auth0_config('domain').self::API_SEGMENT,
-            'headers' => [$authHeader]
+            'domain'   => auth0_config('domain').self::API_SEGMENT,
+            'headers'  => [$authHeader]
         ]);
     }
 
     /**
-     * @param string $userId
+     * @param  string  $userId
+     *
      * @return UserRoles
      * @throws \Auth0\SDK\Exception\EmptyOrInvalidParameterException
      * @throws \Throwable
@@ -94,7 +98,8 @@ class Auth0Service
     }
 
     /**
-     * @param string $email
+     * @param  string  $email
+     *
      * @return User|null
      * @throws \Throwable
      */
@@ -105,7 +110,8 @@ class Auth0Service
 
 
     /**
-     * @param string $email
+     * @param  string  $email
+     *
      * @return Collection
      * @throws \Throwable
      */
@@ -125,7 +131,8 @@ class Auth0Service
 
 
     /**
-     * @param string $id
+     * @param  string  $id
+     *
      * @return User|null
      * @throws \Throwable
      */
@@ -134,16 +141,62 @@ class Auth0Service
         $user = $this->httpRequest
             ->withHeaders(['Authorization' => 'Bearer '.$this->getOauthToken()])
             ->get(conf_auth0('api_domain').self::API_SEGMENT.self::USER_BY_ID_SEGMENT.'/'.$id);
+
         return new User($user->json());
     }
 
     /**
-     * @param string $email
+     * @param  string  $email
+     *
      * @return bool
      * @throws \Throwable
      */
     public function isUserExistByEmail(string $email): bool
     {
         return ! is_null($this->getUserByEmail($email));
+    }
+
+    /**
+     * @param  string  $userId
+     * @param array $meta
+     *
+     * @return Response
+     * @throws \Throwable
+     */
+    public function updateUser(
+        string $userId,
+        array $meta = []
+    ) {
+        $data = ['user_metadata' => $meta];
+
+        try {
+            return $this->httpRequest->withHeaders(['Authorization' => 'Bearer '.$this->getOauthToken()])
+                                     ->patch(conf_auth0('api_audience').'users/'.$userId, $data);
+        } catch (\HttpRequestException $exception) {
+            Log::critical('User API failed to update user: '.var_export($exception->getMessage()),
+                ['user', [$userId, $firstName, $lastName, $phone]]);
+        }
+
+    }
+
+    /**
+     * @param  string  $userId
+     * @param  string  $url
+     *
+     * @return mixed
+     */
+    public function updateUserPicture(string $userId, string $url)
+    {
+        try {
+            return $this->httpRequest->withHeaders(['Authorization' => 'Bearer '.$this->getOauthToken()])
+                                     ->patch(conf_auth0('api_audience').'users/'.$userId, [
+                                         'user_metadata' => [
+                                             'picture' => $url
+                                         ]
+                                     ]);
+        } catch (\HttpRequestException $exception) {
+            Log::critical('User API failed to update picture: '.var_export($exception->getMessage()),
+                ['user', [$userId, $firstName, $lastName, $phone]]);
+        }
     }
 }
