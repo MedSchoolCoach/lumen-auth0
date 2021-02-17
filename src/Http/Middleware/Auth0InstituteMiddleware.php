@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
  * Class Auth0AdminMiddleware
  * @package MedSchoolCoach\LumenAuth0\Http\Middleware
  */
-class Auth0AdminMiddleware
+class Auth0InstituteMiddleware
 {
     /**
      * @var Auth0Verifier
