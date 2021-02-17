@@ -4,6 +4,10 @@ namespace MedSchoolCoach\LumenAuth0\Models;
 
 use Illuminate\Support\Arr;
 
+/**
+ * Class UserRoles
+ * @package MedSchoolCoach\LumenAuth0\Models
+ */
 class UserRoles
 {
     /**
@@ -27,6 +31,20 @@ class UserRoles
     {
         foreach ($this->roles as $role) {
             if (Arr::get($role, 'name') === 'admin') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInstitute(): bool
+    {
+        foreach( $this->roles as $role) {
+            if(Arr::get($role, 'name') === 'institute') {
                 return true;
             }
         }
