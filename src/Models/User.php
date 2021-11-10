@@ -38,6 +38,20 @@ class User extends GenericUser
     }
 
     /**
+     * @return int
+     * @throws \Exception
+     */
+    public function getLegacyId(): int
+    {
+        $id = $this->getId();
+        if (strpos($id, '|') !== false) {
+            return (int) explode('|', $id)[2];
+        }
+
+        throw new \Exception('Unkown legacy id');
+    }
+
+    /**
      * @throws \Auth0\SDK\Exception\EmptyOrInvalidParameterException
      * @throws \Throwable
      */
