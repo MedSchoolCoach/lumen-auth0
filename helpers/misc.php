@@ -9,7 +9,7 @@ if (! function_exists('auth0_config')) {
      */
     function auth0_config(string $key)
     {
-        return config("auth0.${key}");
+        return config("auth0.{$key}");
     }
 }
 
@@ -22,7 +22,7 @@ if (! function_exists('auth0_config_client')) {
     {
         $type = auth0_config('current_client');
 
-        return auth0_config("client.${type}.${key}");
+        return auth0_config("client.{$type}.{$key}");
     }
 }
 
