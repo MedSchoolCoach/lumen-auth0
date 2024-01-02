@@ -23,7 +23,6 @@ class Auth0ServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->configure('auth0');
         $this->mergeConfigFrom(realpath(__DIR__.'/../config/auth0.php'), 'auth0');
 
         $this->app->singleton(TokenVerifier::class, function (Application $app) {
