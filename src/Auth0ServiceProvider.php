@@ -5,7 +5,6 @@ namespace MedSchoolCoach\LumenAuth0;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Lumen\Application;
 use MedSchoolCoach\LumenAuth0\Contracts\TokenVerifier;
 use MedSchoolCoach\LumenAuth0\Contracts\Verifier;
 use MedSchoolCoach\LumenAuth0\Models\User;
@@ -25,7 +24,7 @@ class Auth0ServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(realpath(__DIR__.'/../config/auth0.php'), 'auth0');
 
-        $this->app->singleton(TokenVerifier::class, function (Application $app) {
+        $this->app->singleton(TokenVerifier::class, function ($app) {
             return new Auth0TokenVerifier(
                 auth0_config('domain'),
                 auth0_config('audience'),
@@ -35,6 +34,11 @@ class Auth0ServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(Verifier::class, Auth0Verifier::class);
+
+        $this->app->aliasMiddlewear([
+            'auth0'      => \MedSchoolCoach\LumenAuth0\Http\Middleware\Auth0Middleware::class,
+            'auth0Admin' => \MedSchoolCoach\LumenAuth0\Http\Middleware\Auth0AdminMiddleware::class,
+        ]);
     }
 
     /**
