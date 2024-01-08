@@ -4,6 +4,7 @@ namespace MedSchoolCoach\LumenAuth0;
 
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use MedSchoolCoach\LumenAuth0\Contracts\TokenVerifier;
 use MedSchoolCoach\LumenAuth0\Contracts\Verifier;
@@ -23,17 +24,12 @@ class Auth0ServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(realpath(__DIR__.'/../config/auth0.php'), 'auth0');
-
-        $this->app->singleton(TokenVerifier::class, function ($app) {
-            return new Auth0TokenVerifier(
-                auth0_config('domain'),
-                auth0_config('audience'),
-                auth0_config_client('client_id'),
-                auth0_config('jwks_uri'),
-                $app->make(CacheRepository::class));
+        $this->app->singleton(Auth0Verifier::class, function () {
+            return new Auth0Verifier();
         });
-
-        $this->app->singleton(Verifier::class, Auth0Verifier::class);
+        $this->app->singleton(Verifier::class, function () {
+            return new Auth0Verifier();
+        });
     }
 
     /**
@@ -52,7 +48,9 @@ class Auth0ServiceProvider extends ServiceProvider
                 return null;
             }
 
-            return new User($verifier->getInfo($token));
+            if ($user = $verifier->getInfo($token)) {
+                return new User($user);
+            }
         });
     }
 }

@@ -171,7 +171,7 @@ class Auth0Service
 
         try {
             return $this->httpRequest->withHeaders(['Authorization' => 'Bearer '.$this->getOauthToken()])
-                                     ->patch(conf_auth0('api_audience').'users/'.$userId, $data);
+                ->patch(conf_auth0('api_audience').'users/'.$userId, $data);
         } catch (\HttpRequestException $exception) {
             Log::critical('User API failed to update user: '.var_export($exception->getMessage()),
                 ['user', [$userId, $firstName, $lastName, $phone]]);
@@ -189,11 +189,11 @@ class Auth0Service
     {
         try {
             return $this->httpRequest->withHeaders(['Authorization' => 'Bearer '.$this->getOauthToken()])
-                                     ->patch(conf_auth0('api_audience').'users/'.$userId, [
-                                         'user_metadata' => [
-                                             'picture' => $url
-                                         ]
-                                     ]);
+                ->patch(conf_auth0('api_audience').'users/'.$userId, [
+                    'user_metadata' => [
+                        'picture' => $url
+                    ]
+                ]);
         } catch (\HttpRequestException $exception) {
             Log::critical('User API failed to update picture: '.var_export($exception->getMessage()),
                 ['user', [$userId, $firstName, $lastName, $phone]]);

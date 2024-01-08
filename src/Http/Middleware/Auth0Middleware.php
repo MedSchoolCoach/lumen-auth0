@@ -2,9 +2,11 @@
 
 namespace MedSchoolCoach\LumenAuth0\Http\Middleware;
 
+use Illuminate\Support\Facades\Auth;
 use MedSchoolCoach\LumenAuth0\Auth0Verifier;
 use Closure;
 use Illuminate\Http\Request;
+use MedSchoolCoach\LumenAuth0\Models\User;
 
 /**
  * Class Auth0Middleware
@@ -34,9 +36,7 @@ class Auth0Middleware
     public function handle(Request $request, Closure $next)
     {
         try {
-            if (! $this->verifier->check($request->bearerToken())) {
-                return $this->abort(401, 'Token is not valid');
-            }
+            $token = $this->verifier->check($request->bearerToken());
         } catch (\Exception $e) {
             return $this->abort(401, $e->getMessage());
         }

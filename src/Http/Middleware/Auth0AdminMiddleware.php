@@ -33,6 +33,7 @@ class Auth0AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+
         try {
             if (! $this->verifier->check($request->bearerToken())) {
                 return $this->abort(401, 'Token is not valid');
