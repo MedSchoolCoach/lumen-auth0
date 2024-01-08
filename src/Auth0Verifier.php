@@ -29,7 +29,7 @@ class Auth0Verifier
         ]);
 
         $tokenCache = new \Symfony\Component\Cache\Adapter\FilesystemAdapter();
-        $auth0->configuration()->setTokenCache($tokenCache);
+        $this->auth0->configuration()->setTokenCache($tokenCache);
     }
 
     /**
